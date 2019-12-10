@@ -1,0 +1,3 @@
+include  ':app'
+include ':res-monitor'
+rootProject.name='ResMonitor'
