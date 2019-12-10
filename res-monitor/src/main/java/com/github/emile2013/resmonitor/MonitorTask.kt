@@ -44,7 +44,7 @@ open class MonitorTask : DefaultTask() {
             (value.startsWith("-keep class") || value.startsWith("# Referenced"))
                     && (!value.contains("AndroidManifest.xml"))
 
-        }?.forEachIndexed { index, value ->
+        }?.forEach { value ->
             if (value.startsWith("# Referenced")) {
                 referList.add(value)
                 hasRefer = true
@@ -84,12 +84,12 @@ open class MonitorTask : DefaultTask() {
 
     fun getResourceProguardFileCompat(): File? {
 
-        //todo
-        return FileUtils.join(
-            project.buildDir,
-            "aapt_rules.txt"
-        )
-//        return variantScope.processAndroidResourcesProguardOutputFile
+        // for test
+//        return FileUtils.join(
+//            project.buildDir,
+//            "aapt_rules.txt"
+//        )
+       return variantScope.processAndroidResourcesProguardOutputFile
     }
 
     private fun initClassPool(): ClassPool {
