@@ -37,20 +37,29 @@ open class MonitorTask : DefaultTask() {
 
         var referList = mutableListOf<String>()
 
-        var lastline: String
-        ruleFile?.readLines()?.filter {
-            lastline = it
-            //filter white line and class from AndroidManifest
-            (it.startsWith("-keep") || it.startsWith("# Referenced"))
-                    && (!lastline.contains("AndroidManifest"))
-        }?.forEach {
+        var hasRefer = false
+        ruleFile?.readLines()?.filter { value ->
 
-            if (it.startsWith("# Referenced")) {
-                referList.add(it)
-            } else if (it.startsWith("-keep")) {
-                var classStr = it.removePrefix("-keep class").removeSuffix("{ <init>(...); }")
+            //first filter white line and class from AndroidManifest
+            (value.startsWith("-keep class") || value.startsWith("# Referenced"))
+                    && (!value.contains("AndroidManifest.xml"))
+
+        }?.forEachIndexed { index, value ->
+            if (value.startsWith("# Referenced")) {
+                referList.add(value)
+                hasRefer = true
+            } else if (value.startsWith("-keep") && hasRefer) {
+                var classStr = value.removePrefix("-keep class").removeSuffix("{ <init>(...); }")
                     .removeSuffix("{ <init>(); }").trim()
-                map.put(classStr, referList.toString())
+
+                var orginValue = referList.toString()
+                if (orginValue.isNullOrEmpty()) {
+                    map[classStr] = "no referenced maybe error"
+                } else {
+                    map[classStr] =
+                        orginValue.substring(1, orginValue.length - 1).replace("#", "\n")
+                }
+
                 referList.clear()
             }
         }
@@ -59,11 +68,9 @@ open class MonitorTask : DefaultTask() {
         map?.forEach {
 
             var classStr = it.key
-
-//            var ctclass = pool.getOrNull(classStr)
-//                ?: throw Exception("$classStr not exist,please checkout layout files")
             pool.find(classStr)
                 ?: throw Exception(messageDetail(classStr, it.value))
+
         }
     }
 
@@ -76,7 +83,13 @@ open class MonitorTask : DefaultTask() {
 
 
     fun getResourceProguardFileCompat(): File? {
-        return variantScope.processAndroidResourcesProguardOutputFile
+
+        //todo
+        return FileUtils.join(
+            project.buildDir,
+            "aapt_rules.txt"
+        )
+//        return variantScope.processAndroidResourcesProguardOutputFile
     }
 
     private fun initClassPool(): ClassPool {
