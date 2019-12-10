@@ -30,3 +30,4 @@ val BaseVariant.variantData: BaseVariantData
  *
  */
 inline fun <reified T : BaseExtension> Project.getAndroid(): T = extensions.getByName("android") as T
+

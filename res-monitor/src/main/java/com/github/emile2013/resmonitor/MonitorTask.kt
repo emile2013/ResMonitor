@@ -32,27 +32,52 @@ open class MonitorTask : DefaultTask() {
 
         var ruleFile = getResourceProguardFileCompat()
 
+
+        var map = mutableMapOf<String, String>()
+
+        var referList = mutableListOf<String>()
+
+        var lastline: String
         ruleFile?.readLines()?.filter {
-            it.startsWith("-keep")
+            lastline = it
+            //filter white line and class from AndroidManifest
+            (it.startsWith("-keep") || it.startsWith("# Referenced"))
+                    && (!lastline.contains("AndroidManifest"))
         }?.forEach {
 
-            var classStr = it.removePrefix("-keep class").removeSuffix("{ <init>(...); }")
-                .removeSuffix("{ <init>(); }").trim()
+            if (it.startsWith("# Referenced")) {
+                referList.add(it)
+            } else if (it.startsWith("-keep")) {
+                var classStr = it.removePrefix("-keep class").removeSuffix("{ <init>(...); }")
+                    .removeSuffix("{ <init>(); }").trim()
+                map.put(classStr, referList.toString())
+                referList.clear()
+            }
+        }
+
+
+        map?.forEach {
+
+            var classStr = it.key
 
 //            var ctclass = pool.getOrNull(classStr)
 //                ?: throw Exception("$classStr not exist,please checkout layout files")
-
             pool.find(classStr)
-                ?: throw Exception("$classStr not exist,please checkout layout files")
+                ?: throw Exception(messageDetail(classStr, it.value))
         }
+    }
+
+    private fun messageDetail(classStr: String, refer: String): String {
+
+        var message = StringBuilder("$classStr not exist,but declare in:\n")
+        message.append(refer)
+        return message.toString()
     }
 
 
     fun getResourceProguardFileCompat(): File? {
-        // todo 适配3.6.0+
         return variantScope.processAndroidResourcesProguardOutputFile
     }
-
 
     private fun initClassPool(): ClassPool {
 
