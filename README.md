@@ -21,7 +21,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.github.emile2013:res-monitor:$resmonitor_version" //add this line
+        classpath "com.github.emile2013:ResMonitor:$resmonitor_version" //add this line
     }
 }
 
