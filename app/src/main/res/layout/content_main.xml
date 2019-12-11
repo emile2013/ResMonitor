@@ -8,8 +8,8 @@
     tools:context="com.github.emile2013.resdemo.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.google.android.material.textfield.TextInputEditTexts
+    <androidx.core.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

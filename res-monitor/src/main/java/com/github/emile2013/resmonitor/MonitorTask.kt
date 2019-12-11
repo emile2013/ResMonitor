@@ -57,26 +57,43 @@ open class MonitorTask : DefaultTask() {
                     map[classStr] = "no referenced maybe error"
                 } else {
                     map[classStr] =
-                        orginValue.substring(1, orginValue.length - 1).replace("#", "\n")
+                        orginValue.substring(1, orginValue.length - 1)
                 }
 
                 referList.clear()
             }
         }
 
+        referList.clear()
+
+        var ignoreClasses =
+            project.extensions.findByType(ResMonitorExtension::class.java)?.ignoreClasses
 
         map?.forEach {
 
             var classStr = it.key
-            pool.find(classStr)
-                ?: throw Exception(messageDetail(classStr, it.value))
-
+            if (pool.find(classStr) == null && !ignoreClass(classStr, ignoreClasses)) {
+                //save it
+                referList.add(messageDetail(classStr, it.value))
+            }
         }
+
+        if (referList.isNotEmpty()) {
+            throw Exception(referList.toString().replace("[", "").replace("]", ""))
+        }
+    }
+
+    private fun ignoreClass(classStr: String, ignoreClasses: Collection<String>?): Boolean {
+
+        if (ignoreClasses.isNullOrEmpty()) {
+            return false
+        }
+        return ignoreClasses.contains(classStr)
     }
 
     private fun messageDetail(classStr: String, refer: String): String {
 
-        var message = StringBuilder("$classStr not exist,but declare in:\n")
+        var message = StringBuilder("\n$classStr not exist,but declare at:\n")
         message.append(refer)
         return message.toString()
     }
@@ -89,7 +106,7 @@ open class MonitorTask : DefaultTask() {
 //            project.buildDir,
 //            "aapt_rules.txt"
 //        )
-       return variantScope.processAndroidResourcesProguardOutputFile
+        return variantScope.processAndroidResourcesProguardOutputFile
     }
 
     private fun initClassPool(): ClassPool {
@@ -101,7 +118,7 @@ open class MonitorTask : DefaultTask() {
         var compileClasspath =
             variantScope.getArtifactCollection(
                 AndroidArtifacts.ConsumedConfigType.COMPILE_CLASSPATH,
-                AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.CLASSES
+                AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.AAR
             )
         compileClasspath?.artifactFiles?.forEach {
             try {
@@ -109,6 +126,20 @@ open class MonitorTask : DefaultTask() {
                 project.logger.info("compileClasspath:${it.absolutePath}")
             } catch (e: Exception) {
                 project.logger.error("compileClasspath:${e}")
+            }
+        }
+
+        var runtimeClasspath =
+            variantScope.getArtifactCollection(
+                AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+                AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.AAR
+            )
+        runtimeClasspath?.artifactFiles?.forEach {
+            try {
+                pool.appendClassPath(it.absolutePath)
+                project.logger.info("runtimeClasspath:${it.absolutePath}")
+            } catch (e: Exception) {
+                project.logger.error("runtimeClasspath:${e}")
             }
         }
 

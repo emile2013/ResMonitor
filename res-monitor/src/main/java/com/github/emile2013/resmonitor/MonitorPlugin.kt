@@ -24,6 +24,8 @@ class MonitorPlugin : Plugin<Project> {
                 return
             }
 
+            extensions.create("res_monitor", ResMonitorExtension::class.java)
+
             afterEvaluate {
 
                 if (plugins.hasPlugin("com.android.application")) {

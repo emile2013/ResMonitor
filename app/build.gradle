@@ -16,6 +16,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                                JIGUANG_ONE_LOGIN_KEY: "ab421178785d768b57153e0c"
+
+        ]
     }
     buildTypes {
         release {
@@ -35,4 +39,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}
+
+res_monitor{
+//    ignoreClasses=["androidx.core.view.ViewPager"]
 }
