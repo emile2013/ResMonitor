@@ -1,6 +1,6 @@
 # ResMonitor
 [![license](http://img.shields.io/badge/license-BSD3-brightgreen.svg?style=flat)](https://github.com/emile2013/ResMonitor/tree/master/LICENSE)
-[![Release Version](https://jitpack.io/v/emile2013/nav2main.svg)](https://jitpack.io/#emile2013/ResMonitor)
+[![Release Version](https://jitpack.io/v/emile2013/ResMonitor.svg)](https://jitpack.io/#emile2013/ResMonitor)
 
 A repository for android application or library module to check classes in layout or manifest xml file if exist.
 
@@ -47,7 +47,15 @@ apply plugin: 'com.github.emile2013.res-monitor' // add this line
 ```
 ./gradlew checkReleaseRes
 
+something output on  console like:
+
+Execution failed for task ':app:checkReleaseRes'.
+> java.lang.Exception: androidx.core.view.ViewPager not exist !! but declare at:
+  # Referenced at /ResMonitor/sample/app/src/main/res/layout/content_main.xml:11
+
 ```
+
+
 
 ## Samples 
 - [sample](https://github.com/emile2013/ResMonitor/tree/master/sample)
