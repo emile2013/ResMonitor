@@ -64,6 +64,8 @@ Execution failed for task ':app:checkReleaseRes'.
 
 > This program uses aapt_rule.txt and javassist to handle functions, so must set minifyEnabled=true in build.gradle file.
 
+> 应用场景例如用于Migrate to AndroidX,无论AS自带功能或自写脚本方式均有可能对layout xml存在错误修改，本项目可以对此类问题进行检测。
+
 ## Plan
  
 > 考虑到library相对功能不多，可人工或在集成到app时作较验，本项目暂时不支持library项目。
