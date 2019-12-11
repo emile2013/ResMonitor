@@ -4,9 +4,6 @@
 
 A repository for android application  module to check classes in layout xml file if exist.
 
-> Migrate to Androidx 可能存在修改布局文件类错乱，人工不易发现问题。本项目初衷是监控此类错误，避免带来线上问题。
-
-> Migrate to Androidx maybe make classes in layout xml file not right that developer cannot found easily.This program am to monitor above issues.
 ## Getting Started 
 
 > Edit root project build.gradle file, append res-monitor plugin in  `buildscript`  classpath ，and do not forget add maven { url 'https://jitpack.io' } too.
