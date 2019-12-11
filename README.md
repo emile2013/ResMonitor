@@ -2,7 +2,7 @@
 [![license](http://img.shields.io/badge/license-BSD3-brightgreen.svg?style=flat)](https://github.com/emile2013/ResMonitor/tree/master/LICENSE)
 [![Release Version](https://jitpack.io/v/emile2013/nav2main.svg)](https://jitpack.io/#emile2013/ResMonitor)
 
-A repository for android application or library module to check classes in layout or manifest xml file if exist.
+A repository for android application  module to check classes in layout xml file if exist.
 
 > AS Migrate to Androidx 功能存在修改布局文件类错乱，人工不易发现问题。本项目初衷是监控此类错误，避免带来线上问题。
 
