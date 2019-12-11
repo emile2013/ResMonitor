@@ -46,18 +46,20 @@ open class MonitorTask : DefaultTask() {
 
         }?.forEach { value ->
             if (value.startsWith("# Referenced")) {
-                referList.add(value)
+                referList.add(value + "\n")
                 hasRefer = true
             } else if (value.startsWith("-keep") && hasRefer) {
                 var classStr = value.removePrefix("-keep class").removeSuffix("{ <init>(...); }")
-                    .removeSuffix("{ <init>(); }").trim()
+                        .removeSuffix("{ <init>(); }").trim()
 
-                var orginValue = referList.toString()
-                if (orginValue.isNullOrEmpty()) {
+                var formatValue = referList.toString()
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(",", "")
+                if (formatValue.isNullOrEmpty()) {
                     map[classStr] = "no referenced maybe error"
                 } else {
-                    map[classStr] =
-                        orginValue.substring(1, orginValue.length - 1)
+                    map[classStr] = formatValue
                 }
 
                 referList.clear()
@@ -67,19 +69,22 @@ open class MonitorTask : DefaultTask() {
         referList.clear()
 
         var ignoreClasses =
-            project.extensions.findByType(ResMonitorExtension::class.java)?.ignoreClasses
+                project.extensions.findByType(ResMonitorExtension::class.java)?.ignoreClasses
 
         map?.forEach {
 
             var classStr = it.key
-            if (pool.find(classStr) == null && !ignoreClass(classStr, ignoreClasses)) {
+            if (pool.getOrNull(classStr) == null && !ignoreClass(classStr, ignoreClasses)) {
                 //save it
                 referList.add(messageDetail(classStr, it.value))
             }
         }
 
         if (referList.isNotEmpty()) {
-            throw Exception(referList.toString().replace("[", "").replace("]", ""))
+            throw Exception(referList.toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",", ""))
         }
     }
 
@@ -93,7 +98,7 @@ open class MonitorTask : DefaultTask() {
 
     private fun messageDetail(classStr: String, refer: String): String {
 
-        var message = StringBuilder("\n$classStr not exist,but declare at:\n")
+        var message = StringBuilder("$classStr not exist,but declare at:\n")
         message.append(refer)
         return message.toString()
     }
@@ -116,28 +121,28 @@ open class MonitorTask : DefaultTask() {
 
 
         var compileClasspath =
-            variantScope.getArtifactCollection(
-                AndroidArtifacts.ConsumedConfigType.COMPILE_CLASSPATH,
-                AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.AAR
-            )
+                variantScope.getArtifactCollection(
+                        AndroidArtifacts.ConsumedConfigType.COMPILE_CLASSPATH,
+                        AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.JAR
+                )
         compileClasspath?.artifactFiles?.forEach {
             try {
                 pool.appendClassPath(it.absolutePath)
-                project.logger.info("compileClasspath:${it.absolutePath}")
+                project.logger.error("compileClasspath:${it.absolutePath}")
             } catch (e: Exception) {
                 project.logger.error("compileClasspath:${e}")
             }
         }
 
         var runtimeClasspath =
-            variantScope.getArtifactCollection(
-                AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
-                AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.AAR
-            )
+                variantScope.getArtifactCollection(
+                        AndroidArtifacts.ConsumedConfigType.RUNTIME_CLASSPATH,
+                        AndroidArtifacts.ArtifactScope.EXTERNAL, AndroidArtifacts.ArtifactType.JAR
+                )
         runtimeClasspath?.artifactFiles?.forEach {
             try {
                 pool.appendClassPath(it.absolutePath)
-                project.logger.info("runtimeClasspath:${it.absolutePath}")
+                project.logger.error("runtimeClasspath:${it.absolutePath}")
             } catch (e: Exception) {
                 project.logger.error("runtimeClasspath:${e}")
             }
@@ -156,21 +161,21 @@ open class MonitorTask : DefaultTask() {
 
         //javac
         var javacClasspath = FileUtils.join(
-            project.buildDir,
-            AndroidProject.FD_INTERMEDIATES,
-            "javac",
-            variantScope.variantData.name,
-            "classes"
+                project.buildDir,
+                AndroidProject.FD_INTERMEDIATES,
+                "javac",
+                variantScope.variantData.name,
+                "classes"
         ).absolutePath
         project.logger.info("javacClasspath:${javacClasspath}")
         pool.appendClassPath(javacClasspath)
 
         //kotlin temp
         var kotlinClasspath = FileUtils.join(
-            project.buildDir,
-            "tmp",
-            "kotlin-classes",
-            variantScope.variantData.name
+                project.buildDir,
+                "tmp",
+                "kotlin-classes",
+                variantScope.variantData.name
         ).absolutePath
         project.logger.info("kotlinClasspath:${kotlinClasspath}")
         pool.appendClassPath(kotlinClasspath)
@@ -180,7 +185,7 @@ open class MonitorTask : DefaultTask() {
 
 
     class ConfigAction(private var variantScope: VariantScope, private var project: Project) :
-        Action<MonitorTask> {
+            Action<MonitorTask> {
 
         override fun execute(task: MonitorTask) {
             task.variantScope = variantScope
