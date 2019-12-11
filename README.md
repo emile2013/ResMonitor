@@ -50,7 +50,7 @@ apply plugin: 'com.github.emile2013.res-monitor' // add this line
 ```
 
 ## Samples 
-- [sample](https://github.com/emile2013/ResMonitor/tree/master/app)
+- [sample](https://github.com/emile2013/ResMonitor/tree/master/sample)
 
 
 ## Tips

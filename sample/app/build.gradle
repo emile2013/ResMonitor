@@ -17,7 +17,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
-                                JIGUANG_ONE_LOGIN_KEY: "ab421178785d768b57153e0c"
+                JIGUANG_ONE_LOGIN_KEY: "ab421178785d768b57153e0c"
 
         ]
     }
@@ -42,6 +42,6 @@ dependencies {
 
 }
 
-res_monitor{
+res_monitor {
 //    ignoreClasses=["androidx.core.view.ViewPager"]
 }

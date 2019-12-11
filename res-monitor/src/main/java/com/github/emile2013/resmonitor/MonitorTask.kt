@@ -98,7 +98,7 @@ open class MonitorTask : DefaultTask() {
 
     private fun messageDetail(classStr: String, refer: String): String {
 
-        var message = StringBuilder("$classStr not exist,but declare at:\n")
+        var message = StringBuilder("$classStr not exist !! but declare at:\n")
         message.append(refer)
         return message.toString()
     }
@@ -128,7 +128,7 @@ open class MonitorTask : DefaultTask() {
         compileClasspath?.artifactFiles?.forEach {
             try {
                 pool.appendClassPath(it.absolutePath)
-                project.logger.error("compileClasspath:${it.absolutePath}")
+                project.logger.info("compileClasspath:${it.absolutePath}")
             } catch (e: Exception) {
                 project.logger.error("compileClasspath:${e}")
             }
@@ -142,7 +142,7 @@ open class MonitorTask : DefaultTask() {
         runtimeClasspath?.artifactFiles?.forEach {
             try {
                 pool.appendClassPath(it.absolutePath)
-                project.logger.error("runtimeClasspath:${it.absolutePath}")
+                project.logger.info("runtimeClasspath:${it.absolutePath}")
             } catch (e: Exception) {
                 project.logger.error("runtimeClasspath:${e}")
             }

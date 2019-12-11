@@ -1,4 +1,2 @@
-//include  ':app'
-//include  ':buildSrc'
 include ':res-monitor'
 rootProject.name='ResMonitor'
