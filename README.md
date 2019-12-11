@@ -59,6 +59,12 @@ apply plugin: 'com.github.emile2013.res-monitor' // add this line
 
 > This program uses aapt_rule.txt and javassist to handle functions, so must set minifyEnabled=true in build.gradle file.
 
+## Plan
+ 
+> 考虑到library相对功能不多，可人工或在集成到app时作较验，本项目暂时不支持library项目。
+
+> This program do not support library module, while support later.
+
 
 
 ## License

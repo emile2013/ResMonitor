@@ -4,7 +4,7 @@ buildscript {
 
     ext.kotlin_version = '1.3.50'
     ext.agp_version = '3.5.1'
-    ext.res_version='b239afcb84'
+    ext.res_version = 'b239afcb84'
     repositories {
         maven { url 'https://jitpack.io' }
         mavenLocal()

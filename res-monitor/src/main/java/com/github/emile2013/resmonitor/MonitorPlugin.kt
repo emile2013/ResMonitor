@@ -1,7 +1,6 @@
 package com.github.emile2013.resmonitor
 
 import com.android.build.gradle.AppExtension
-import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,8 +18,8 @@ class MonitorPlugin : Plugin<Project> {
 
         with(project) {
 
-            //only check app or library
-            if (!plugins.hasPlugin("com.android.application") && !plugins.hasPlugin("com.android.library")) {
+            //only check app
+            if (!plugins.hasPlugin("com.android.application") ) {
                 return
             }
 
@@ -28,24 +27,11 @@ class MonitorPlugin : Plugin<Project> {
 
             afterEvaluate {
 
-                if (plugins.hasPlugin("com.android.application")) {
-
-                    var android = extensions.getByType(AppExtension::class.java)
-                    android.applicationVariants.all { variant ->
-                        var proguardEnable = variant.buildType.isMinifyEnabled
-                        if (proguardEnable) {
-                            registTasks(this, variant)
-                        }
-                    }
-                } else if (project.plugins.hasPlugin("com.android.library")) {
-
-                    var android = extensions.getByType(LibraryExtension::class.java)
-                    android.libraryVariants.all { variant ->
-                        var proguardEnable = variant.buildType.isMinifyEnabled
-                        if (proguardEnable) {
-                            registTasks(this, variant)
-                        }
-
+                var android = extensions.getByType(AppExtension::class.java)
+                android.applicationVariants.all { variant ->
+                    var proguardEnable = variant.buildType.isMinifyEnabled
+                    if (proguardEnable) {
+                        registTasks(this, variant)
                     }
                 }
             }
