@@ -2,15 +2,14 @@
 [![license](http://img.shields.io/badge/license-BSD3-brightgreen.svg?style=flat)](https://github.com/emile2013/ResMonitor/tree/master/LICENSE)
 [![Release Version](https://jitpack.io/v/emile2013/ResMonitor.svg)](https://jitpack.io/#emile2013/ResMonitor)
 
-A repository for android application module to detect if layout file contain non-existent views.
+用于检测Android项目layout文件中控件类是否存在，避免因控件类不存在，带来线上ClassNotFoundException问题！
+[README English Version](README.md)
 
-[README 中文版](README.zh-CN.md)
+## 使用
 
-## Getting Started 
+#### 1. 增加依赖
 
-#### 1. Add dependencies
-
-> Add `ResMonitor` plugin in root build.gradle,and do not forget add maven { url 'https://jitpack.io' } too.
+>  根项目build.gradle增加classpath依赖
 
 ```groovy
 buildscript {
@@ -36,14 +35,14 @@ allprojects {
 }
 ```
 
->  apply `com.github.emile2013.res-monitor` plugin in module build.gradle file
+>  App build.gradle apply `com.github.emile2013.res-monito` plugin
 
 ```groovy
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.emile2013.res-monitor' // add this line
 ```
 
-### 2. Run task
+## 运行&日记输出
 
 ```
 ./gradlew checkReleaseRes
@@ -56,12 +55,18 @@ Execution failed for task ':app:checkReleaseRes'.
 
 ```
 
-## Samples 
+## 示例
 - [sample](https://github.com/emile2013/ResMonitor/tree/master/sample)
 
-## Tips
+
+## 原理
  
-> This program uses aapt_rule.txt and javassist to handle functions, so must set minifyEnabled=true in build.gradle file.
+> 此项目原理是拿到layout和manifest xml导出的混淆文件,再通过javassist检测类是否存在。所以依赖的项目要开启混淆配置(minifyEnabled=true)
+> 应用场景例如用于Migrate to AndroidX,无论AS自带功能或自写脚本方式均有可能对layout xml存在错误修改，本项目可以对此类问题进行检测。
+
+## TODO
+ 
+> 考虑到library相对功能不多，可人工或在集成到app时作较验，本项目暂时不支持library项目。
 
 ## License
 
