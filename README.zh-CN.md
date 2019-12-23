@@ -42,7 +42,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.github.emile2013.res-monitor' // add this line
 ```
 
-## 运行&日记输出
+#### 2.运行&log输出
 
 ```
 ./gradlew checkReleaseRes
